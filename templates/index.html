@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 
 {% block title %}
@@ -7,13 +8,38 @@ index
 
 {% block content %}
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Index</h1>
-            <p>This is the index page</p>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">
+        Welcome! Select a category to view the products.
+    </h2>
+    <div class="row justify-content-center">
+        <!-- Vegetable Category -->
+        <div class="col-md-5 text-center mb-4">
+            <a href="{% url "vegetables" %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0">
+                    <img src="{% static 'images/vegetables.jpeg' %}" class="card-img-top img-fluid" alt="Vegetables" />
+                    <div class="card-body">
+                        <h5 class="card-title text-success">Vegetables</h5>
+                        <p class="card-text text-muted">Fresh and healthy vegetables for every meal.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Fruit Category -->
+        <div class="col-md-5 text-center mb-4">
+            <a href="{% url "fruits" %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0">
+                    <img src="{% static 'images/fruits.jpeg' %}" class="card-img-top img-fluid" alt="Fruits" />
+                    <div class="card-body">
+                        <h5 class="card-title text-danger">Fruits</h5>
+                        <p class="card-text text-muted">Sweet and fresh fruits for a healthy lifestyle.</p>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 </div>
+
 
 {% endblock content %}

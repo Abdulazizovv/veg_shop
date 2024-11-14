@@ -1,11 +1,35 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import CustomUser
+from .models import CustomUser, Product
 from django.contrib.auth import login
 
 
 def index(request):
     return render(request, 'index.html')
+
+
+def vegetables(request):
+    products = Product.objects.filter(product_type='vegetable').all()
+    context = {
+        'products': products
+    }
+    return render(request, 'vegetables.html', context)
+
+
+def fruits(request):
+    products = Product.objects.filter(product_type='fruits').all()
+    context = {
+        'products': products
+    }
+    return render(request, 'fruits.html', context)
+
+
+def product_detail(request, product_id):
+    product = Product.objects.filter(id=product_id).first()
+    context = {
+        'product': product
+    }
+    return render(request, 'product_detail.html', context)
 
 
 def register_user(request):

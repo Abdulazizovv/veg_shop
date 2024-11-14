@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+
+    {{ product.name }}
+
+{% endblock title %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <!-- Product Image on the Left -->
+        <div class="col-md-6 text-center">
+            <img id="productImage" src="{{ product.image_A.url }}" class="img-fluid rounded shadow-lg" alt="{{ product.name }}">
+        </div>
+
+        <!-- Product Details on the Right -->
+        <div class="col-md-6">
+            <h2 class="fw-bold mb-3">{{ product.name }}</h2>
+            <p class="text-muted">Description:{{ product.description }}</p>
+            <p class="text-primary fs-4"><strong>Price: ${{ product.price }}</strong></p>
+
+            <!-- Category Selection Form -->
+            <form action="" method="post" class="mt-4">
+                {% csrf_token %}
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="inputGroupSelect01">Category</label>
+                    </div>
+                    <select id="categorySelect" class="form-select" required>
+                        <option selected disabled value="">Choose a category</option>
+                        <option value="category_a" data-image="{{ product.image_A.url }}">A</option>
+                        <option value="category_b" data-image="{{ product.image_B.url }}">B</option>
+                        <option value="category_c" data-image="{{ product.image_C.url }}">C</option>
+                        <option value="category_d" data-image="{{ product.image_D.url }}">D</option>
+                    </select>
+                    <div class="valid-feedback">You selected a category!</div>
+                    <div class="invalid-feedback">Please select a category!</div>
+                  </div>
+
+            
+                <br>
+                 <!-- Quantity Selection -->
+                 <label for="quantityInput" class="form-label fw-bold mt-3">Quantity:</label>
+                 <input id="quantityInput" type="number" name="quantity" min="1" value="1" class="form-control mb-3" required>
+ 
+                 <!-- Buy Now Button -->
+                 <button type="submit" class="btn btn-success w-100 py-2 mt-3">
+                     Buy Now
+                 </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript to dynamically change the product image based on selected category
+    document.getElementById('categorySelect').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const newImageUrl = selectedOption.getAttribute('data-image');
+        document.getElementById('productImage').src = newImageUrl;
+    });
+</script>
+
+{% endblock content %}

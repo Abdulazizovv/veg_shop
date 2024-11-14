@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+
+Vegetables
+
+{% endblock title %}
+
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Vegetables Products</h2>
+
+    <div class="row">
+        {% if products %}
+            {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="{{ product.image_A.url }}" class="card-img-top img-fluid" alt="{{ product.name }}" />
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+                            <p class="text-primary"><strong>${{ product.price }}</strong></p>
+                        </div>
+                        <div class="card-footer bg-white border-0 d-flex justify-content-end">
+                            <a href="{% url "product_detail" product.id %}" class="btn btn-primary btn-sm px-3">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center text-muted">No products available in this category.</p>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock content %}
