@@ -31,6 +31,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
+    is_seller = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -103,3 +104,29 @@ class Product(models.Model):
         elif self.category == 'D':
             return self.image_D
         return None
+
+
+class BuyerInfo(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    address = models.TextField()
+    phone_number = models.CharField(max_length=15)
+
+    
+    def __str__(self):
+        return f"{self.user} - {self.phone_number}"
+
+
+class SoldProduct(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    buyer_info = models.ForeignKey(BuyerInfo, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    status_choices = [
+        ('pending', 'Pending'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+    ]
+    status = models.CharField(max_length=10, choices=status_choices, default='pending')
+    date_sold = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.product.name} - {self.quantity} units sold on {self.date_sold}"
