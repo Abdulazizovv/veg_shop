@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import CustomUser, Product
-from django.contrib.auth import login
+from .models import CustomUser, Product, SoldProduct, BuyerInfo
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -41,12 +42,13 @@ def register_user(request):
     if request.method == 'POST':
         first_name = request.POST['firstName']
         email = request.POST['emailAddress']
+        phone_number = request.POST['phoneNumber']
         password = request.POST['password']
         confirm_password = request.POST['confirmPassword']
 
         if password == confirm_password:
             try:
-                user = CustomUser.objects.create_user(email=email, first_name=first_name, password=password)
+                user = CustomUser.objects.create_user(email=email, first_name=first_name, phone_number=phone_number, password=password)
                 user.save()
                 messages.success(request, 'User registered successfully')
                 return redirect('index')
@@ -61,7 +63,7 @@ def register_user(request):
 
 def login_user(request):
     if request.method == 'POST':
-        email = request.POST['emailAddress']
+        email = request.POST['email']
         password = request.POST['password']
 
         user = CustomUser.objects.filter(email=email).first()
@@ -79,3 +81,43 @@ def login_user(request):
                 return render(request, 'login.html')
 
     return render(request, 'login.html')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect("index")
+
+
+@login_required(login_url="/login")
+def buy_product(request):
+    if request.method == "POST":
+        product_id = request.POST.get("productId")
+        category = request.POST.get("category")
+        quantity = request.POST.get("quantity")
+        address = request.POST.get("address")
+        user = request.user
+
+        if category and product_id:
+            try:
+                product = get_object_or_404(Product, id=product_id)
+                sold_product = SoldProduct.objects.create(product=product, category=category, quantity=quantity, address=address, buyer=user)
+                return redirect("orders")
+            except Exception as err:
+                print(err)
+                messages.error(request, "Something is wrong...")
+                return redirect("index")
+        return redirect("index")
+
+@login_required(login_url="/login")
+def orders(request):
+    orders = SoldProduct.objects.filter(buyer=request.user).all().order_by('-date_sold')
+    return render(request, "orders.html", {"orders": orders})
+
+
+@login_required(login_url="/login")
+def profile(request):
+    return render(request, 'profile.html')
+
+
+def about(request):
+    return render(request, "about.html")

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser, BaseUserManager
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class CustomUserManager(BaseUserManager):
@@ -32,6 +33,7 @@ class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
     is_seller = models.BooleanField(default=False)
+    phone_number = models.CharField(max_length=25, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -45,7 +47,8 @@ class CustomUser(AbstractUser):
 # for profile
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    image = models.ImageField(default='default.png', upload_to='profile_pics')
+    bio = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.user} Profile'
@@ -118,7 +121,15 @@ class BuyerInfo(models.Model):
 
 class SoldProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    buyer_info = models.ForeignKey(BuyerInfo, on_delete=models.CASCADE)
+    CATEGORY_CHOICES = [
+        ('A', 'Category A'),
+        ('B', 'Category B'),
+        ('C', 'Category C'),
+        ('D', 'Category D'),
+    ]
+    category = models.CharField(max_length=255, choices=CATEGORY_CHOICES, default="A")
+    address = models.TextField()
+    buyer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     status_choices = [
         ('pending', 'Pending'),
@@ -130,3 +141,12 @@ class SoldProduct(models.Model):
     
     def __str__(self):
         return f"{self.product.name} - {self.quantity} units sold on {self.date_sold}"
+
+
+
+# django signals 
+
+# @receiver(post_save, sender=CustomUser)
+# def create_profile(sender, instance, created,**kwargs):
+#     if created:
+#         Profile.objects.create(user=CustomUser)

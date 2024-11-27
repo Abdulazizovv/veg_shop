@@ -28,8 +28,8 @@ class BuyerInfoAdmin(admin.ModelAdmin):
 
 
 class SoldProductAdmin(admin.ModelAdmin):
-    list_display = ['product', 'buyer_info__user', 'date_sold', 'status']
-    search_fields = ['product', 'buyer__user']
+    list_display = ['product', 'buyer', 'date_sold', 'status']
+    search_fields = ['product', 'buyer']
     list_per_page = 10
 
 

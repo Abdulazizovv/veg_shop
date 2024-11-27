@@ -53,21 +53,40 @@
         </form>
 	      <div class="collapse navbar-collapse" id="ftco-nav">
 	        <ul class="navbar-nav mr-auto">
-	        	<li class="nav-item active"><a href="#" class="nav-link">Home</a></li>
+	        	<li class="nav-item {% if request.path == '/' %} active{% endif %}"><a href="/" class="nav-link">Home</a></li>
 	        	
-	        	<li class="nav-item"><a href="#" class="nav-link">About</a></li>
+	        	<li class="nav-item {% if request.path == '/about/' %} active{% endif %}"><a href="{% url "about" %}" class="nav-link">About</a></li>
 				{% if request.user.is_authenticated %}
-	        	<li class="nav-item"><a href="#" class="nav-link">Profile</a></li>
+	        	<li class="nav-item {% if request.path == '/profile/' %} active{% endif %}"><a href="{% url "profile" %}" class="nav-link">Profile</a></li>
+	        	<li class="nav-item {% if request.path == '/orders/' %} active{% endif %}"><a href="{% url "orders" %}" class="nav-link">Orders</a></li>
 				{% else %}
 				<li class="nav-item"><a href="{% url "login_user" %}" class="nav-link">Login</a></li>
 				<li class="nav-item"><a href="{% url 'register_user' %}" class="nav-link">Register</a></li>
 				{% endif %}
 	        </ul>
-	      </div>
-	    </div>
-	  </nav>
-    <!-- END nav -->
-	</section>
+		</div>
+	</div>
+</nav>
+<!-- END nav -->
+</section>
+{% if messages %}
+	<div class="container mt-3">
+		<div class="row justify-content-center">
+			<div class="col-md-8">
+				{% for message in messages %}
+				<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+					{{ message|safe }}
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+{% endif %}
+
+
 	
 
     {% block content %}{% endblock content %}
