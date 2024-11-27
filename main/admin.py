@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, Profile, Product
+from .models import CustomUser, Profile, Product, SoldProduct, BuyerInfo
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -21,6 +21,16 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
+class BuyerInfoAdmin(admin.ModelAdmin):
+    list_display = ['user', 'address', 'phone_number']
+    search_fields = ['user', 'address', 'phone_number']
+    list_per_page = 10
+
+
+class SoldProductAdmin(admin.ModelAdmin):
+    list_display = ['product', 'buyer_info__user', 'date_sold', 'status']
+    search_fields = ['product', 'buyer__user']
+    list_per_page = 10
 
 
 
@@ -29,3 +39,6 @@ class CustomUserAdmin(admin.ModelAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Product, ProductAdmin)
+admin.site.register(SoldProduct, SoldProductAdmin)
+admin.site.register(BuyerInfo, BuyerInfoAdmin)
+
